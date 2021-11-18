@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>Insert title here</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- CDN 서비스 -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+</head>
+
+<body>
+  <%- include('../common/header', {menu:'member', userInfo: userInfo});%>
+    <form action="" id="form" name="form">
+      <div class="container mt-3">
+        <input type="hidden" name="idCheckyn" id="idCheckyn" value="N">
+        <h1>회원가입</h1>
+
+        <div class="input-group mb-3">
+          <input type="text" class="form-control" placeholder="아이디" name="user_id" id="user_id">
+          <div class="input-group-append">
+            <button class="btn btn-success" type="button" onclick="goIdCheck()">중복체크</button>
+          </div>
+        </div>
+
+        <div class="input-group mb-3">
+          <input type="password" class="form-control" placeholder="패스워드" name="password" id="password">
+        </div>
+
+        <div class="input-group mb-3">
+          <input type="password" class="form-control" placeholder="패스워드확인" name="password2" id="password2">
+        </div>
+
+        <div class="input-group mb-3">
+          <input type="text" class="form-control" placeholder="이름" name="username" id="username">
+        </div>
+
+        <div class="input-group mb-3">
+          <input type="text" class="form-control" placeholder="닉네임" name="nickname" id="nickname">
+        </div>
+
+
+        <div class="input-group mb-3">
+          <input type="text" class="form-control" placeholder="email" name="email" id="email">
+        </div>
+
+        <div class="input-group mb-3">
+          <input type="text" class="form-control" placeholder="전화번호" name="phone" id="phone">
+        </div>
+
+        <div class="input-group mb-3">
+          <input type="text" class="form-control" placeholder="우편번호" name="zipcode" id="zipcode">
+        </div>
+        <div class="input-group mb-3">
+          <input type="text" class="form-control" placeholder="도로주소" name="address1" id="address1">
+        </div>
+        <div class="input-group mb-3">
+          <input type="text" class="form-control" placeholder="상세주소" name="address2" id="address2">
+        </div>
+
+        <!-- 다음 우편 api  -->
+        <div class="container" style="text-align:right">
+
+          <div class="btn-group">
+
+            <button type="button" class="btn btn-primary" onclick="goWrite()">등록</button>&nbsp;&nbsp;
+
+            <button type="button" class="btn btn-primary" onclick="goCancel()">취소</button>&nbsp;&nbsp;
+          </div>
+        </div>
+    </form>
+    </div>
+
+</body>
+
+</html>
+
+<script>
+  function goWrite() {
+    // var frm = document.form;
+    // frm.method = "post";
+    // frm.action = "/member/register";
+    // frm.submit();
+
+    // const params = $('#form').serialize();
+    // 서버로 보낼 정보를 JSON형태로 만들어 보낸다
+    const params = {
+      'user_id': $('#user_id').val(),
+      'password': $('#password').val(),
+      'username': $('#username').val(),
+      'nickname': $('#nickname').val(),
+      'email': $('#email').val(),
+      'phone': $('#phone').val(),
+      'zipcode': $('#zipcode').val(),
+      'address1': $('#address1').val(),
+      'address2': $('#address2').val(),
+    }
+    console.log(params);
+    $.ajax({
+      url: '/member/register',
+      data: params,
+      method: 'post',
+      dataType: 'json'
+    })
+      .done((data) => {
+        console.log('data: ', data);
+        if (data.result === 'success') {
+          alert('회원가입을 축하합니다.');
+          location.href = '/'; // 페이지 이동 
+        }
+
+      }) // 전송이 성공하면 done 호출
+      .fail((jqXHR, status) => {
+        console.log('jqXHR : ', jqXHR);
+        console.log('status : ', status);
+      }); // 전송이 실패하면 fail 호출
+  }
+
+  function goModify() {
+    var frm = document.form;
+    frm.action = "/board/modify_save";
+    frm.submit();
+  }
+
+  function goCancel() {
+    var frm = document.form;
+    frm.action = "/board/list";
+    frm.submit();
+  }
+
+  function goIdCheck() {
+    // jquery ajax
+    $.ajax({
+      url: '/member/idCheck',
+      data: { user_id: $('#user_id').val() },
+      method: 'post',
+      dataType: 'json' // 수신 data type(text, xml, json중 선택)
+    })
+      .done((data) => {
+        console.log('data: ', data);
+        if (data.result === 'success') {
+          alert('사용가능한 아이디입니다.');
+          $('#idCheckyn').val('Y');
+        } else {
+          alert('중복된 아이디입니다.');
+          $('#user_id').val('');
+          $('#idCheckyn').val('N');
+        }
+
+      }) // 전송이 성공하면 done 호출
+      .fail((jqXHR, status) => {
+        console.log('jqXHR : ', jqXHR);
+        console.log('status : ', status);
+      }); // 전송이 실패하면 fail 호출
+
+
+  }
+</script>

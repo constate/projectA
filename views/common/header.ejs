@@ -1,0 +1,20 @@
+<nav class="navbar navbar-expand-sm bg-light navbar-light">
+  <ul class="navbar-nav">
+    <!-- <li class="nav-item active"> -->
+    <li class="nav-item <%if(menu === 'member'){%> active <%}%>">
+      <a class="nav-link" href="/member/register_form">회원가입</a>
+    </li>
+    <li class="nav-item <%if(menu === 'board'){%> active <%}%>">
+      <a class="nav-link" href="/board">게시판</a>
+    </li>
+    <li class="nav-item">
+      <%if( userinfo.user_id===undefined || userinfo.username==='' ) {%>
+        <a class="nav-link" href="/member/logon_form">로그온</a>&nbsp;&nbsp;
+        <%}else{%>
+          <a class="nav-link" href="/member/logout">
+            <%=userinfo.username%> 로그아웃
+          </a>
+          <%}%>
+    </li>
+  </ul>
+</nav>
